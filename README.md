@@ -90,7 +90,7 @@ For testing.....if you have unzip in $HOME/abc, you can found the directory is a
 
 You can modify as below in coreos/Vagrantfile for just like shared disk.
 ```
-config.vm.synced_folder "~abc/coreos/continuse", "/continuse", id: "core", :nfs => true, :mount_options =>  ["nolock,vers=3,udp"], :map_uid => 0, :map_gid => 0
+config.vm.synced_folder "~/abc/coreos/continuse", "/continuse", id: "root", :nfs => true, :mount_options =>  ["nolock,vers=3,udp"], :map_uid => 0, :map_gid => 0
 ```
 6) Start the machine(s)
 If you have unzip in $HOME/abc..
