@@ -4,6 +4,9 @@ Requires=docker.service
 After=docker.service
 
 [Service]
+TimeoutStartSec=0
+Restart=alway
+RestartSec=0
 ExecStartPre=-/usr/bin/docker kill compute
 ExecStartPre=-/usr/bin/docker rm compute
 ExecStart=/bin/bash -c "\

@@ -4,6 +4,9 @@ Requires=docker.service
 After=docker.service
 
 [Service]
+TimeoutStartSec=0
+Restart=alway
+RestartSec=0
 ExecStartPre=-/usr/bin/docker kill controller
 ExecStartPre=-/usr/bin/docker rm controller
 ExecStartPre=/bin/bash -c ". /etc/profile.d/myenv.sh; \
