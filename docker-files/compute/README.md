@@ -1,7 +1,8 @@
 # OpenStack Compute
 This image contains Nova service running designed by CoreOS using the shared disk for fault tolerance features. Please reder to https://github.com/ContinUSE/openstack-on-coreos
 
-The sample service file is as folows:
+##The sample service file is as folows:
+
 ```
 [Unit]
 Description=Compute %i for OpenStack:JUNO

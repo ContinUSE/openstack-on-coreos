@@ -2,7 +2,8 @@
 This image contains MySQL Server, Keystone, Glance, Nova, Horizon service running designed by CoreOS using the shared disk for fault tolerance features.
 Please reder to https://github.com/ContinUSE/openstack-on-coreos
 
-The sample service file is as folows:
+##The sample service file is as folows:
+
 ```
 [Unit]
 Description=Controller for OpenStack:JUNO
