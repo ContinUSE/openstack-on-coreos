@@ -3,6 +3,10 @@
 /hostsctl.sh insert
 controller=`awk '/controller/ {print $1}' /tmp/hosts`
 
+# hostname insert to /tmp/hosts file
+hostname=`hostname`
+echo "$MYIPADDR $hostname" >> /tmp/hosts
+
 ######### Edit /etc/sysctl.conf #########
 sed -i "s/^#net.ipv4.ip_forward.*/net.ipv4.ip_forward=1/" /etc/sysctl.conf
 ######### Edit /etc/sysctl.conf #########
