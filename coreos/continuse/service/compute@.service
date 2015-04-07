@@ -21,7 +21,7 @@ ExecStart=/bin/bash -c "\
 --env IF_NAME=docker0 \
 -v /etc/localtime:/etc/localtime \
 -v /continuse:/continuse \
--v /continuse/data/nova:/var/lib/nova/instances \
+-v /continuse/shared/nova:/var/lib/nova/instances \
 -v /sys/fs/cgroup:/sys/fs/cgroup \
 -v /lib/modules:/lib/modules \
 continuse/openstack-compute:juno"
