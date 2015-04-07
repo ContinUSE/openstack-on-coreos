@@ -20,8 +20,8 @@ ExecStart=/bin/bash -c "\
 --env NOVA_PASS=novapass \
 --env IF_NAME=docker0 \
 -v /etc/localtime:/etc/localtime \
--v /home/core/continuse:/continuse \
--v /home/core/continuse/data/nova:/var/lib/nova/instances \
+-v /continuse:/continuse \
+-v /continuse/data/nova:/var/lib/nova/instances \
 -v /sys/fs/cgroup:/sys/fs/cgroup \
 -v /lib/modules:/lib/modules \
 continuse/openstack-compute:juno"
