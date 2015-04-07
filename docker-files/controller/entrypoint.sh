@@ -107,6 +107,8 @@ sed -i "s/rabbit_password.*/rabbit_password = $RABBIT_PASS/" $GLANCE_API
 sed -i "s/sqlite_db.*/connection = \
      mysql:\/\/glance:$GLANCE_DBPASS@controller\/glance/" $GLANCE_API
 sed -i "s/backend = sqlalchemy.*/backend = mysql/" $GLANCE_API
+# docker container support
+sed -i "/^#container_formats.*/container_formats=ami,ari,aki,bare,ovf,ova,docker/" $GLANCE_API
 
 ### /etc/glance/glance-registry.conf for MySQL & RabbitMQ
 sed -i "s/sqlite_db.*/connection = \
