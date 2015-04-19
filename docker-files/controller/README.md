@@ -42,9 +42,9 @@ ExecStart=/bin/bash -c \
 --publish 80:80 \
 --publish 6080:6080 \
 -v /etc/localtime:/etc/localtime \
--v /home/core/continuse:/continuse \
--v /home/core/continuse/shared/mysql:/data \
--v /home/core/continuse/shared/glance:/var/lib/glance \
+-v /continuse:/continuse \
+-v /continuse/shared/mysql:/data \
+-v /continuse/shared/glance:/var/lib/glance \
 continuse/openstack-controller:juno"
 ExecStop=-/usr/bin/docker stop controller
 
