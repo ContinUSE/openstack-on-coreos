@@ -1,0 +1,3 @@
+#!/bin/bash
+
+sudo /usr/bin/docker exec -i -t $1 /bin/bash
