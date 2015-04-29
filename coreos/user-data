@@ -4,7 +4,7 @@ coreos:
   etcd:
     # generate a new token for each unique cluster from https://discovery.etcd.io/new
     # WARNING: replace each time you 'vagrant destroy'
-    discovery: https://discovery.etcd.io/3d6888f0400ab870c70b674f3ac2583d
+    discovery: <TOKEN>
     addr: $public_ipv4:4001
     peer-addr: $public_ipv4:7001
   fleet:
@@ -45,7 +45,7 @@ coreos:
         Description=Set the timezone
 
         [Service]
-        ExecStart=/usr/bin/timedatectl set-timezone UTC
+        ExecStart=/usr/bin/timedatectl set-timezone Asia/Seoul
         RemainAfterExit=yes
         Type=oneshot
 write_files:
@@ -54,3 +54,4 @@ write_files:
     owner: core
     content: |
       export MYIPADDR=$public_ipv4
+      export PATH=$PATH:/continuse/bin
