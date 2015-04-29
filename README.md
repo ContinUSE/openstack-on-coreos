@@ -48,7 +48,7 @@ This is a muti-node cluster proof-of-concept that includes setting up the extern
 * Images Name : continuse/openstack-compute:juno
 * provide service : Libvirt, Nova, Netron
 
-**++Currently, these images support Operating System is only  CoreOS, but I plan to develop for any Linux that supports Docker Service.In addition, I will update for the other services of OpenStack, such as swift, cinder service etc.++**
+**Currently, these images support Operating System is only  CoreOS, but I plan to develop for any Linux that supports Docker Service.In addition, I will update for the other services of OpenStack, such as swift, cinder service etc.**
 
 ## CoreOS Installation
 My development environment is as VirtualBox and Vagrant on Mac OSX (dual core i5 and 16G memory). Please refer to the website https://coreos.com about CoreOS installation.
@@ -169,7 +169,7 @@ $ sudo docker pull continuse/openstack-controller:juno
 $ sudo docker pull continuse/openstack-network:juno
 $ sudo docker pull continuse/openstack-compute:juno
 ```
-**++If you do not the pulling images, it takes a lot of time at the beginning of services.++**
+**If you do not the pulling images, it takes a lot of time at the beginning of services.**
 
 ## Service File Modification
 
@@ -180,9 +180,9 @@ $ vagrant ssh core-01 -- -A
 
 Neutron Service provide Distributed Virtual Router and L3 HA options. This docker images can configured to select one. 
 
-++**If you want to configure Distributed Virtual Router, to modify ""--env HA_MODE=DVR" option in three files.**++ 
+**If you want to configure Distributed Virtual Router, to modify ""--env HA_MODE=DVR" option in three files.** 
 
-++**If you want to configure L3 HA, to modify ""--env HA_MODE=L3_HA" option in three files.**++ 
+**If you want to configure L3 HA, to modify ""--env HA_MODE=L3_HA" option in three files.** 
 
 * /continuse/service/controller.service
 * /continuse/service/network@.service
@@ -190,7 +190,7 @@ Neutron Service provide Distributed Virtual Router and L3 HA options. This docke
 
 If you want to change the rest variables in these service files.
 
-++**NOTE: MUST BE THE SAME for the same environment variable at the three service files.**++
+**NOTE: MUST BE THE SAME for the same environment variable at the three service files.**
 
 example) If you want to configure ``HA_MODE=DVR``, ALL service files (controller.service, network@.service, compute@.service) set to ``HA_MODE=DVR`` as the same.
 
@@ -461,7 +461,7 @@ $
 ```
 You will found controller.service running on core-02 from core-04. For verification, to connect dashboard "http://192/168.10.12/horizon/" and YOU CAN ANY ACTION IS NO PROBLEM.
 
-++**Network Node / Compute Node Fail Test is the same as the above controller node fail test.**++
+**Network Node / Compute Node Fail Test is the same as the above controller node fail test.**
 In Case Of HA_MODE=L3_HA, there is no problem in network node fail test, but HA_MODE=DVR does not support failover. Because currently "snat" namespace could not move to the another host.
 
 ## VM Migration
