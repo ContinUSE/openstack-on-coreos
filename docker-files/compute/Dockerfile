@@ -10,8 +10,11 @@ RUN apt-get update \
 	&& apt-get -y install nova-compute sysfsutils 
 
 ######### nova-network service #########
-RUN apt-get update \
-	&& apt-get -y install nova-network nova-api-metadata
+### RUN apt-get update \
+###	&& apt-get -y install nova-network nova-api-metadata
+
+######## neutron service ###############
+RUN apt-get -y install neutron-plugin-ml2 neutron-plugin-openvswitch-agent neutron-l3-agent
 
 ######### controller monitoring #########
 RUN apt-get -y install telnet curl

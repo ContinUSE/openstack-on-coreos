@@ -1,36 +1,24 @@
-# OpenStack Compute
-This image contains Nova service running designed by CoreOS using the shared disk for fault tolerance features. Please reder to https://github.com/ContinUSE/openstack-on-coreos
+# OpenStack Dockerizing
+OpenStack is obtaining using Docker/CoreOS the following advatages :
+* Easy to Deploy
+* Easy to Test
+* Easy to Scale-out
+* Fault Tolerance
 
-##The sample service file is as folows:
+##### Controller Image
+* Image Name : continuse/openstack-controller:juno
+* provide service : MySQL, RabbitMQ, Keystone, Glance, Nova, Neutron
 
-```
-[Unit]
-Description=Compute %i for OpenStack:JUNO
-Requires=docker.service
-After=docker.service
+##### Network Image
+* Image Name : continuse/openstack-network:juno
+* provide service : Distributed Virtual Router / L3 HA with VxLAN
 
-[Service]
-ExecStartPre=-/usr/bin/docker kill compute
-ExecStartPre=-/usr/bin/docker rm compute
-ExecStart=/bin/bash -c "\
-. /etc/profile.d/myenv.sh; \
-/usr/bin/docker run --net=host --privileged=true \
---name compute \
---env ETCDCTL_PEERS=10.10.0.101:4001,10.10.0.102:4001,10.10.0.103:4001,10.10.0.104:4001 \
---env RABBIT_PASS=rabbitpass \
---env MYIPADDR=$MYIPADDR \
---env ADMIN_TENANT_NAME=service \
---env NOVA_PASS=novapass \
---env IF_NAME=docker0 \
--v /etc/localtime:/etc/localtime \
--v /continuse:/continuse \
--v /continuse/data/nova:/var/lib/nova/instances \
--v /sys/fs/cgroup:/sys/fs/cgroup \
--v /lib/modules:/lib/modules \
-continuse/openstack-compute:juno"
-ExecStop=-/usr/bin/docker stop compute
+##### Compute Image
+* Images Name : continuse/openstack-compute:juno
+* provide service : Libvirt, Nova, Netron
 
-[X-Fleet]
-Conflicts=controller*
-Conflicts=compute*
-```
+++Currently, these images support Operating System is only  CoreOS, but I plan to develop for any Linux that supports Docker Service.In addition, I will update for the other service of OpenStack, such as swift, cinder etc.++
+
+Regarding the installation, please refer to the link 
+https://github.com/ContinUSE/openstack-on-coreos
+
