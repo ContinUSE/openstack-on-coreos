@@ -29,7 +29,7 @@ This is a muti-node cluster proof-of-concept that includes setting up the extern
 #####Usage of Network Interface:
 
 | Device | Role  | IP Range |
-|--------|--------|
+|--------|--------|---------|
 | eth0 |  NAT (Default Route)      | 10.0.2.XX |
 | eth1 | External Network (The above special setting of NAT) | 10.0.5.XX |
 | eth2 | Tunneling | 172.16.0.XX |
