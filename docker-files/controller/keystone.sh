@@ -73,3 +73,21 @@ if [ -z "$endpoint" ]; then
         --service_id $name 
 fi
 
+## FOR NEUTRON
+keystone user-create --name neutron --pass $NEUTRON_PASS
+keystone user-role-add --user neutron --tenant $ADMIN_TENANT_NAME --role admin
+
+name=`keystone service-list | awk '/ network / {print $2}'`
+if [  -z $name ]; then
+    keystone service-create --name neutron --type network --description "OpenStack Networking"
+fi
+name=`keystone service-list | awk '/ network / {print $2}'`
+endpoint=`keystone endpoint-list | awk '/ '$name' / {print $2}'`
+if [ -z "$endpoint" ]; then
+    keystone endpoint-create \
+        --region $REGION_NAME \
+        --publicurl http://controller:9696 \
+        --internalurl http://controller:9696 \
+        --adminurl http://controller:9696 \
+        --service_id $name
+fi

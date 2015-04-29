@@ -40,6 +40,9 @@ RUN apt-get -y install nova-api nova-cert nova-conductor nova-consoleauth \
 # Horizone
 RUN apt-get -y install apache2 memcached libapache2-mod-wsgi openstack-dashboard
 
+# Neutron
+RUN apt-get -y install neutron-server neutron-plugin-ml2 python-neutronclient
+
 # MySQL Data Volume
 VOLUME ["/data"]
 
@@ -48,5 +51,5 @@ COPY keystone.sh /keystone.sh
 
 CMD ["/entrypoint.sh"]
 
-EXPOSE 3306 35357 9292 5000 5672 8774 8776 6080 80
+EXPOSE 3306 35357 9292 5000 5672 8774 8776 6080 9696 80
 
