@@ -17,7 +17,7 @@ OpenStack is obtaining using Docker/CoreOS the following advatages :
 * Images Name : continuse/openstack-compute:juno
 * provide service : Libvirt, Nova, Netron
 
-++Currently, these images support Operating System is only  CoreOS, but I plan to develop for any Linux that supports Docker Service.In addition, I will update for the other service of OpenStack, such as swift, cinder etc.++
+**Currently, these images support Operating System is only  CoreOS, but I plan to develop for any Linux that supports Docker Service.In addition, I will update for the other service of OpenStack, such as swift, cinder etc.**
 
 Regarding the installation, please refer to the link 
 https://github.com/ContinUSE/openstack-on-coreos
