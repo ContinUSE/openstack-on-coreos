@@ -1,0 +1,43 @@
+[Unit]
+Description=Nova-Docker %i for OpenStack:JUNO
+Requires=docker.service
+After=docker.service
+
+[Service]
+TimeoutStartSec=0
+Restart=alway
+RestartSec=0
+ExecStartPre=-/usr/bin/docker kill nova-docker
+ExecStartPre=-/usr/bin/docker rm nova-docker
+ExecStart=/bin/bash -c "\
+MYIPADDR=$(ifconfig eth3 | awk '/ inet / {print $2}'); \
+TUNNEL_IP=$(ifconfig eth2 | awk '/ inet / {print $2}'); \
+/usr/bin/docker run --net=host --privileged=true \
+--name nova-docker \
+--env ETCDCTL_PEERS=192.168.10.11:4001,192.168.10.12:4001,192.168.10.13:4001,192.168.10.14:4001 \
+--env HA_MODE=L3_HA \
+--env RABBIT_PASS=rabbitpass \
+--env MYIPADDR=$MYIPADDR \
+--env TUNNEL_IP=$TUNNEL_IP \
+--env ADMIN_TENANT_NAME=service \
+--env NOVA_PASS=novapass \
+--env NEUTRON_PASS=neutronpass \
+--env REGION_NAME=RegionOne \
+--env INTERFACE_NAME=eth1 \
+-v /etc/localtime:/etc/localtime \
+-v /continuse:/continuse \
+-v /continuse/shared/nova:/var/lib/nova/instances \
+-v /sys/fs/cgroup:/sys/fs/cgroup \
+-v /lib/modules:/lib/modules \
+-v /dev:/dev \
+continuse/openstack-nova-docker:juno"
+ExecStop=-/usr/bin/docker exec nova-docker ovs-vsctl del-br br-int
+ExecStop=-/usr/bin/docker exec nova-docker ovs-vsctl del-br br-tun
+ExecStop=-/usr/bin/docker exec nova-docker ovs-vsctl del-br br-ex
+ExecStop=-/usr/bin/docker stop nova-docker
+
+[X-Fleet]
+Conflicts=controller*
+Conflicts=network*
+Conflicts=compute*
+Conflicts=nova-docker*
