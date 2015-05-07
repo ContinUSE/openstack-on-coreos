@@ -48,6 +48,10 @@ This is a muti-node cluster proof-of-concept that includes setting up the extern
 * Images Name : continuse/openstack-compute:juno
 * provide service : Libvirt, Nova, Netron
 
+##### Nova-docker Image
+* Images Name : continuse/openstack-nova-docker:juno
+* provide service : Nova, Netron, Docker Driver
+
 **Currently, these images support Operating System is only  CoreOS, but I plan to develop for any Linux that supports Docker Service.In addition, I will update for the other services of OpenStack, such as swift, cinder service etc.**
 
 ## CoreOS Installation
@@ -182,11 +186,12 @@ Neutron Service provide Distributed Virtual Router and L3 HA options. This docke
 
 **If you want to configure Distributed Virtual Router, to modify ""--env HA_MODE=DVR" option in three files.** 
 
-**If you want to configure L3 HA, to modify ""--env HA_MODE=L3_HA" option in three files.** 
+**If you want to configure L3 HA, to modify ""--env HA_MODE=L3_HA" option in 4 files.** 
 
 * /continuse/service/controller.service
 * /continuse/service/network@.service
 * /continuse/service/compute@.service
+* /continuse/service/nova-docker@.service
 
 If you want to change the rest variables in these service files.
 
@@ -207,10 +212,12 @@ YOU MUST BE DATA INITIALIZATION, AFTER THE CHAGE ``HA_MODE`` VALUE.
 * Nova Instance Data Remove
         $ rm -rf /continuse/shared/nova/*
 
-
-
-
 ## Usage
+
+Nova-docker driver is provided separately as Nova-compute service with libvirt/KVM-qemu.
+
+Please refer to [Nova-Docker Driver Usage](README-nova-docker.md)
+
 ### Service Start / Stop / Destroy
 
 connect to one of the machines:
