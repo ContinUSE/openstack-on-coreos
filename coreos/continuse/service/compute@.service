@@ -38,8 +38,4 @@ ExecStop=-/usr/bin/docker stop compute
 Conflicts=controller*
 Conflicts=network*
 Conflicts=compute*
-
-#MachineID=154fea9e2270409ab033604880a2ab47
-#MachineID=8f6fcefb93b24968ae7e08ec423eb7e1
-#MachineID=0d348a8e3d624d819c18803d613fd30b
-#MachineID=01df5f39981942268b5d852f42b7127f
+Conflicts=nova-docker*
