@@ -1,4 +1,4 @@
-FROM ubuntu:14.04.1
+FROM ubuntu:14.04
 MAINTAINER Jaewoo Lee <continuse@icloud.com>
 
 RUN apt-get update \
