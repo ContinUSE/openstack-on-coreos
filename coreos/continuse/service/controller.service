@@ -5,7 +5,7 @@ After=docker.service
 
 [Service]
 TimeoutStartSec=0
-Restart=alway
+Restart=always
 RestartSec=0
 ExecStartPre=-/usr/bin/docker kill controller
 ExecStartPre=-/usr/bin/docker rm controller

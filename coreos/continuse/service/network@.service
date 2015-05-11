@@ -5,7 +5,7 @@ After=docker.service
 
 [Service]
 TimeoutStartSec=0
-Restart=alway
+Restart=always
 RestartSec=0
 ExecStartPre=-/usr/bin/docker kill network
 ExecStartPre=-/usr/bin/docker rm network
@@ -14,7 +14,7 @@ MYIPADDR=$(ifconfig eth3 | awk '/ inet / {print $2}'); \
 TUNNEL_IP=$(ifconfig eth2 | awk '/ inet / {print $2}'); \
 /usr/bin/docker run --net=host --privileged=true \
 --name network \
---env ETCDCTL_PEERS=192.168.10.11:4001,192.168.10.12:4001,192.168.10.13:4001,192.168.10.14:4001 \
+--env ETCDCTL_PEERS=192.168.10.11:4001,192.168.10.12:4001,192.168.10.13:4001,192.168.10.14:4001,192.168.10.15:4001 \
 --env HA_MODE=L3_HA \
 --env RABBIT_PASS=rabbitpass \
 --env REGION_NAME=RegionOne \
