@@ -1,4 +1,5 @@
-# OpenStack on CoreOS (OpenStack Dockerizing)
+# OpenStack on CoreOS Cluster 
+
 
 CoreOS provide ease of cluster managing such as fault tolerance and scaleability features.
 OpenStack operation need to high availability features in real world. So I am trying to make docker container according to CoreOS for OpenStack Operation Environments.
@@ -11,6 +12,13 @@ And also OpenStack is obtaining using Docker/CoreOS the following advatages :
 * Easy to Test
 * Easy to Scale-out
 * Fault Tolerance
+
+## Cluster Configuration 
+The sample cluster consists 4 group.
+* controller : 3-node cluster (role of controller)
+* network : 2-node cluster (role of neutron)
+* compute : 2-node cluster (role of compute)
+* nova-docker : 2-node cluster (role of nova-docker)
 
 ## Test Environments
 #####Install dependencies
@@ -59,7 +67,7 @@ My development environment is as VirtualBox and Vagrant on Mac OSX (dual core i5
 
 The below installation procedure is an example of my development environment.
 
-1) Update "discovery URL" in coreos/user-data file
+1) Update "discovery URL" in cluster/controller/user-data file
 
 * getting the discovery URL
 ```
@@ -73,31 +81,31 @@ coreos:
     # generate a new token for each unique cluster from https://discovery.etcd.io/new
     # WARNING: replace each time you 'vagrant destroy'
     discovery: <token>
-    addr: $public_ipv4:4001
-    peer-addr: $public_ipv4:7001
 ```
 
-2) Update your Timezone in coreos/user-data file
+2) Update your Timezone in 
+* ``cluster/controller/user-data``
+* ``cluster/network/user-data``
+* ``cluster/compute/user-data``
+* ``cluster/nova-docker/user-data``
 
-You will need to modify the set-timezeone field in your timezone as below. The default value is ``Asia/Seoul``. If your location is in Korea, to set UTC.
-```
-[Service]
-ExecStart=/usr/bin/timedatectl set-timezone UTC
-```
+You will need to modify the set-timezeone field in your timezone. The default value is ``Asia/Seoul``.
 
-3) Update basic CoreOS cluster information in coreos/config.rb
+3) config.rb
 
-**The number of servers in the cluster (min 5 nodes for Fault Tolerance)**
+**There is no need to change the general configuration.**
+
+The number of servers in the cluster.
 ```
 # Size of the CoreOS cluster created by Vagrant
-$num_instances=5
+$num_instances=3
 ```
-**choose for CoreOS (stable, beta or alpha)**
+choose for CoreOS (stable, beta or alpha)
 ```
 # Official CoreOS channel from which updates should be downloaded
 $update_channel='stable'
 ```
-**Set Up for VirtualBox VMs**
+Set Up for VirtualBox VMs
 
 For testing, vm_memory is over 2048, and vb_cpus is over 2.
 ```
@@ -106,80 +114,107 @@ $vb_memory = 2048
 $vb_cpus = 2
 ```
 
-4) Update Vagrant information in coreos/Vagrantfile
+4) Update Vagrant Vagrantfile
 
-Do NOT EDIT "Vagrantfile" ecept for NFS mount path for test.
+Do NOT EDIT "Vagrantfile" except for NFS mount path for test.
+* ``cluster/controller/Vagrantfile``
+* ``cluster/network/Vagrantfile``
+* ``cluster/compute/Vagrantfile``
+* ``cluster/nova-docker/Vagrantfile``
 
-**Network Interface**
-```
-config.vm.network :private_network, ip: "10.0.5.#{i+10}", :adapter => 2
-config.vm.network :private_network, ip: "172.16.0.#{i+10}", :netmask => "255.255.0.0", :adapter => 3
-config.vm.network :private_network, ip: "192.168.10.#{i+10}", :netmask => "255.255.255.0", :adapter => 4
-```
+
 **NFS Mount**
 
-For testing.....if you have unzip in $HOME/abc, you can found the directory is as follows:
-* $HOME/abc/coreos/continuse
-* $HOME/abc/coreos/continuse/service : contains service file for fleet service
-* $HOME/abc/coreos/continuse/script : sample image file and etc.
-* $HOME/abc/coreos/continuse/shared 
-* $HOME/abc/coreos/continuse/shared/mysql : mysql shared data
-* $HOME/abc/coreos/continuse/shared/glance : glance image shared data
-* $HOME/abc/coreos/continuse/shared/nova : nova instances shared data
-
-You can modify as below in coreos/Vagrantfile for just like shared disk.
 ```
-config.vm.synced_folder "~/abc/coreos/continuse", "/continuse", id: "root", :nfs => true, :mount_options =>  ["nolock,vers=3,udp"], :map_uid => 0, :map_gid => 0
+config.vm.synced_folder "~/test/cluster/continuse", "/continuse", id: "root", :nfs => true, :mount_options =>  ["nolock,vers=3,udp"], :map_uid => 0, :map_gid => 0
 ```
 5) Start the machine(s)
-If you have unzip in $HOME/abc..
+
 ```
-$ cd $HOME/abc/coreos
+$ cd $HOME/test/controller
+$ vagrant up
+.......
+$ cd ../network
+$ vagrant up
+.......
+$ cd ../compute
+$ vagrant up
+.......
+$ cd ../nova-docker
 $ vagrant up
 ```
 During procedures for ``vagrant up`` need to your admin password for NFS mount.
 
-List the status of the running machines:
+List the status the running machines of each directory (controller, network, compute, nova-docker:
 ```
 $ vagrant status
 Current machine states:
 
-core-01                   running (virtualbox)
-core-02                   running (virtualbox)
-core-03                   running (virtualbox)
-core-04                   running (virtualbox)
-core-05                   running (virtualbox)
+controller-01                   running (virtualbox)
+controller-02                   running (virtualbox)
+controller-03                   running (virtualbox)
 
-This environment represents multiple VMs. The VMs are all listed
-above with their current state. For more information about a specific
-VM, run `vagrant status NAME`.
-$
 ```
+
 You can connect to one of the machines the following vagrant ssh command:
 ```
-$ vagrant ssh core-01 -- -A
+$ vagrant ssh controller-01 -- -A
 ```
 
 ## Pulling the docker container images 
 I could not use attached storage for docker. (refer to https://coreos.com/docs/cluster-management/setup/mounting-storage/#use-attached-storage-for-docker). Because my test environment does not support btrfs file system device.
 
-For the test environment, you have to pulling the images for all nodes.
+### controller image
+Download for All nodes (controller-01, controller-02, controller-03)
 ```
 On Mac
-$ vagrant ssh core-01 -- -A
+$ cd $HOME/test/controller
+$ vagrant ssh controller-03 -- -A
 
 On CoreOS
 $ sudo docker pull continuse/openstack-controller:juno
+```
+
+### network image
+Download for All nodes (network-01, network-02)
+```
+On Mac
+$ cd $HOME/test/network
+$ vagrant ssh network-01 -- -A
+
+On CoreOS
 $ sudo docker pull continuse/openstack-network:juno
+```
+
+### compute image
+Download for All nodes (compute-01, compute-02)
+```
+On Mac
+$ cd $HOME/test/compute
+$ vagrant ssh compute-01 -- -A
+
+On CoreOS
 $ sudo docker pull continuse/openstack-compute:juno
 ```
+
+### nova-docker image
+Download for All nodes (nova-docker-01, nova-docker-02)
+```
+On Mac
+$ cd $HOME/test/nova-docker
+$ vagrant ssh nova-docker-01 -- -A
+
+On CoreOS
+$ sudo docker pull continuse/openstack-nova-docker:juno
+```
+
 **If you do not the pulling images, it takes a lot of time at the beginning of services.**
 
 ## Service File Modification
 
 First, connect to one of the machines
 ```
-$ vagrant ssh core-01 -- -A
+$ vagrant ssh controller-01 -- -A
 ```
 
 Neutron Service provide Distributed Virtual Router and L3 HA options. This docker images can configured to select one. 
@@ -189,15 +224,13 @@ Neutron Service provide Distributed Virtual Router and L3 HA options. This docke
 **If you want to configure L3 HA, to modify ""--env HA_MODE=L3_HA" option in 4 files.** 
 
 * /continuse/service/controller.service
-* /continuse/service/network@.service
-* /continuse/service/compute@.service
-* /continuse/service/nova-docker@.service
-
-If you want to change the rest variables in these service files.
+* /continuse/service/network.service
+* /continuse/service/compute.service
+* /continuse/service/nova-docker.service
 
 **NOTE: MUST BE THE SAME for the same environment variable at the three service files.**
 
-example) If you want to configure ``HA_MODE=DVR``, ALL service files (controller.service, network@.service, compute@.service) set to ``HA_MODE=DVR`` as the same.
+example) If you want to configure ``HA_MODE=DVR``, ALL service files (controller.service, network.service, compute.service, nova-docker.service) set to ``HA_MODE=DVR`` as the same.
 
 ## Data Initialization
 
@@ -226,7 +259,7 @@ connect to one of the machines:
 ```
 On Mac
 $ cd $HOME/abc/coreos
-$ vagrant ssh core-01 -- -A
+$ vagrant ssh controller-01 -- -A
 
 On CoreOS
 Last login: Fri Apr  3 12:11:03 2015 from 10.0.2.2
@@ -236,23 +269,23 @@ $ fleetctl start controller.service
 ```
 **network service start (2 node service start for HA)**
 ```
-$ fleetctl start network@{1..2}.service
+$ fleetctl start network.service
 ```
 
 **compute service start**
 ```
-$ fleetctl start compute@1.service
+$ fleetctl start compute.service
 ```
 
 The unit should have been scheduled to a machine in your cluster.
 You can know which machine run the service.
 ```
 $ fleetctl list-units
-UNIT			    MACHINE				        ACTIVE	SUB
-compute@1.service	68b75b56.../192.168.10.15	active	running
-controller.service	01df5f39.../192.168.10.14	active	running
-network@1.service	154fea9e.../192.168.10.11	active	running
-network@2.service	0d348a8e.../192.168.10.13	active	running
+UNIT			       MACHINE         	        ACTIVE	SUB
+compute.service	   68b75b56.../192.168.10.31	active	running
+controller.service	01df5f39.../192.168.10.13	active	running
+network.service	   154fea9e.../192.168.10.21	active	running
+network.service	   0d348a8e.../192.168.10.22	active	running
 ```
 
 **service stop**
@@ -260,66 +293,60 @@ network@2.service	0d348a8e.../192.168.10.13	active	running
 If you want to stop the service. The stop means that stop the service, but service information remains the cluster.
 ```
 $ fleetctl stop controller.service
-$ fleetctl stop network@2.service
-$ fleetctl stop compute@1.service
+$ fleetctl stop network.service
+$ fleetctl stop compute.service
 ```
 **service destroy**
 
 This command effective that the service information removed from the cluster.
 ```
 $ fleetctl destroy controller.service
-$ fleetctl destroy network@{1..2}.service
+$ fleetctl destroy network@.service
 ```
 
 ###Log Monitoring
 You can view a log of each service in a realtime.
 ```
 $ fleetctl journal -f controller.service
-$ fleetctl journal -f network@2.service
-$ fleetctl journal -f compute@1.service
+$ journalctl -u network.service -f
+$ journalctl -u compute.service -f
 ```
-If you got an error such as ``public key.....``, the below script excute for ``ALL NODE`` on Mac.
-```
-$ cd $HOME/abc/coreos
-$ vagrant ssh-config --host core-01 >> ~/.ssh/config
-$ vagrant ssh-config --host core-01 | sed -n "s/IdentityFile//gp" | xargs ssh-add
-```
+
 ###Login to controller / Network / Compute Node
 You can get the IP Address through the ``fleetctl list-unins`` command for the controller host.
 
 ```
 $ fleetctl list-units
 UNIT			    MACHINE				        ACTIVE	SUB
-compute@1.service	68b75b56.../192.168.10.15	active	running  ==> core-05
-controller.service	01df5f39.../192.168.10.14	active	running  ==> core-04
-network@1.service	154fea9e.../192.168.10.11	active	running  ==> core-01
-network@2.service	0d348a8e.../192.168.10.13	active	running  ==> core-03
+compute.service	    68b75b56.../192.168.10.31	active	running 
+controller.service 	01df5f39.../192.168.10.13	active	running  
+network.service	    154fea9e.../192.168.10.21	active	running  
+network.service	    0d348a8e.../192.168.10.22	active	running  
 ```
 
 **login to controller running host**
 
-For instance : the controller service running on core-04
 ```
-$ vagrant ssh core-04 -- -A
+$ vagrant ssh controller-03 -- -A
 on CoreOS
-$ connect controller
+$ connect
 ```
 Network / Compute Node connection method
 ```
 === Network Node ===
-login to core-01 or core-03
-$ connect network
+login to network-01 or network-03
+$ connect
 
 === Compute Node ===
-login to core-05 
-$ connect compute
+login to compute-01 or compute-02 
+$ connect
 ```
 
 ### Image Upload & Create Network etc. on Controller
 
 ```
-Login to core-04
-$ connect controller
+Login to controller-01
+$ connect
 
 # 
 ```
@@ -388,7 +415,7 @@ chmod 0600 myKey.pem
 ```
 
 ###Using Dashboard
-You can get the IP Address through the ``fleetctl list-unins`` command for the controller host. Access the dashboard using a web browser: http://controller-ip-addr/horizon/. For instance http://192.168.10.14/horizon/ (ID : admin, Password : adminpass)
+You can get the IP Address through the ``fleetctl list-unins`` command for the controller host. Access the dashboard using a web browser: http://controller-ip-addr/horizon/. For instance http://192.168.10.13/horizon/ (ID : admin, Password : adminpass)
 
 In my case to change RAM size 512M to 64M in m1.tiny in flavor. And Launch Instance to select network "private".
 
@@ -444,29 +471,29 @@ You can get IP address for running controller service using ``fleetctl list-unit
 **Controller node fail test**
 ```
 On Mac
-$ vagrant halt core-04
-==> core-04: Attempting graceful shutdown of VM...
-$ vagrant up core-04
+$ vagrant halt controller-03
+==> controller-03: Attempting graceful shutdown of VM...
+$ vagrant up controller-03
 Bringing machine 'core-04' up with 'virtualbox' provider...
-==> core-04: Checking if box 'coreos-stable' is up to date...
-==> core-04: Clearing any previously set forwarded ports...
+==> controller-03: Checking if box 'coreos-stable' is up to date...
+==> controller-03: Clearing any previously set forwarded ports...
 .
 .
 .
 .
 
-$ vagrant ssh core-01
+$ vagrant ssh controller-02
 Last login: Wed Apr 29 14:31:02 2015 from 10.0.2.2
-CoreOS stable (633.1.0)
+CoreOS alpha (681.0.0)
 core@core-01 ~ $ fleetctl list-units
-UNIT			MACHINE				ACTIVE	SUB
-compute@1.service	68b75b56.../192.168.10.15	active	running
-controller.service	8f6fcefb.../192.168.10.12	active	running
-network@1.service	154fea9e.../192.168.10.11	active	running
-network@2.service	0d348a8e.../192.168.10.13	active	running
+UNIT			    MACHINE				        ACTIVE	SUB
+compute.service	    68b75b56.../192.168.10.31	active	running
+controller.service	 8f6fcefb.../192.168.10.12	active	running
+network.service	    154fea9e.../192.168.10.31	active	running
+network.service	    0d348a8e.../192.168.10.32	active	running
 $
 ```
-You will found controller.service running on core-02 from core-04. For verification, to connect dashboard "http://192/168.10.12/horizon/" and YOU CAN ANY ACTION IS NO PROBLEM.
+You will found controller.service running on controller-02 from controller-03. For verification, to connect dashboard "http://192/168.10.12/horizon/" and YOU CAN ANY ACTION IS NO PROBLEM.
 
 **Network Node / Compute Node Fail Test is the same as the above controller node fail test.**
 In Case Of HA_MODE=L3_HA, there is no problem in network node fail test, but HA_MODE=DVR does not support failover. Because currently "snat" namespace could not move to the another host.
@@ -474,10 +501,10 @@ In Case Of HA_MODE=L3_HA, there is no problem in network node fail test, but HA_
 ## VM Migration
 
 If you want to compute node fail test, YOU NEED TO VM MIGRATION.
-If one VM ran on core-05 and your new service of compute@1.service run on core-04, you will need the following the action on controller node.
+If one VM ran on compute-01 and your new service of compute.service run on compute-02, you will need the following the action on controller node.
 ```
 On controller
-$ nova evacuate demo01 core-04 –-on-shared-storage
+$ nova evacuate demo01 compute-02 –-on-shared-storage
 ```
 Confirm to access the dashboard for migration VM.
 
