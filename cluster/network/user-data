@@ -1,0 +1,75 @@
+#cloud-config
+
+coreos:
+  etcd2:
+    initial-cluster: controller-01=http://192.168.10.11:2380,controller-02=http://192.168.10.12:2380,controller-03=http://192.168.10.13:2380
+    listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
+    #listen-peer-urls: http://$private_ipv4:2380,http://$private_ipv4:7001
+    #advertise-client-urls: http://$public_ipv4:2379
+    #initial-advertise-peer-urls: http://$private_ipv4:2380
+    proxy: on
+  fleet:
+    public-ip: $public_ipv4
+    metadata: role=network
+  flannel:
+    interface: $public_ipv4
+  units:
+    - name: flanneld.service
+      command: start
+      drop-ins:
+        - name: 50-network-config.conf
+          content: |
+            [Unit]
+            Requires=etcd2.service
+            [Service]
+            ExecStartPre=/usr/bin/etcdctl set /coreos.com/network/config '{"Network":"10.244.0.0/16", "Backend": {"Type": "vxlan"}}'
+    - name: fleet.service
+      command: start
+    - name: docker.service
+      command: start
+      drop-ins:
+        - name: 50-insecure-registry.conf
+          content: |
+            [Unit]
+            Requires=flanneld.service
+            After=flanneld.service
+            [Service]
+            Environment=DOCKER_OPTS='--insecure-registry="0.0.0.0/0"'
+
+    - name: setup-network-environment.service
+      command: start
+      content: |
+        [Unit]
+        Description=Setup Network Environment
+        Documentation=https://github.com/kelseyhightower/setup-network-environment
+        Requires=network-online.target
+        After=network-online.target
+        [Service]
+        ExecStartPre=-/usr/bin/mkdir -p /opt/bin
+        ExecStartPre=/usr/bin/wget -N -P /opt/bin https://storage.googleapis.com/k8s/setup-network-environment
+        ExecStartPre=/usr/bin/chmod +x /opt/bin/setup-network-environment
+        ExecStart=/opt/bin/setup-network-environment
+        RemainAfterExit=yes
+        Type=oneshot
+    - name: settimezone.service
+      command: start
+      content: |
+        [Unit]
+        Description=Set the timezone
+
+        [Service]
+        ExecStart=/usr/bin/timedatectl set-timezone Asia/Seoul
+        RemainAfterExit=yes
+        Type=oneshot
+
+write_files:
+ - path: /home/core/.bash_profile
+   permissions: '0644'
+   content: |
+      #!/bin/bash
+      export PATH=$PATH:/opt/bin
+ - path: /opt/bin/connect
+   permissions: '0755'
+   content: |
+      #!/bin/bash
+      docker exec -it network /bin/bash
