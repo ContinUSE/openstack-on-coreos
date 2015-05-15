@@ -1,0 +1,20 @@
+nova secgroup-add-rule default tcp 22 22 0.0.0.0/0
+nova secgroup-add-rule default icmp -1 -1 0.0.0.0/0
+
+neutron net-create public --router:external True \
+    --provider:network_type flat \
+    --provider:physical_network external
+
+neutron subnet-create --name public-subnet \
+    --gateway 10.0.5.1 \
+    --allocation-pool start=10.0.5.100,end=10.0.5.200 \
+    --disable-dhcp public 10.0.5.0/24
+
+neutron net-create private 
+neutron subnet-create --name private-subnet private \
+    10.10.0.0/24 --dns-nameserver 10.0.5.1
+
+neutron router-create router  --ha False
+neutron router-interface-add router private-subnet
+neutron router-gateway-set router public
+
