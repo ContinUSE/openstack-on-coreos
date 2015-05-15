@@ -4,11 +4,11 @@ The Docker driver is a hypervisor driver, it is support to Openstack Nova Comput
 ## nova-docker service start
 Any Host Login to One of the CoreOS Cluster Nodes. And Nova-docker service starting. 
 ```
-# vagrant ssh core-05
+# vagrant ssh nova-docker-01
 
 on coreos
 $ cd /continuse/service
-$ fleetctl start nova-docker@1.service
+$ fleetctl start nova-docker.service
 ```
 
 ## Docker Image Upload to Glance
@@ -36,7 +36,7 @@ You can make instance using Project->Instance menu on Horizon (Dashboard), and a
 ## Docker Container Running Check & Test
 Login to CoreOS host which does not running neutron service. Because 
 ```
-# vagrant ssh core-02
+# vagrant ssh nova-docker-01
 
 $ sudo docker run --rm -it redis redis-cli -h 10.0.5.101
 
