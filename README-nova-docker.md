@@ -2,9 +2,9 @@
 The Docker driver is a hypervisor driver, it is support to Openstack Nova Compute. The driver lives out-of-tree for juno, but I am trying to make docker container just like Nova Compute Container. Now I'm testing this driver, and I think that needed to orchestrating docker tool.
 
 ## nova-docker service start
-Any Host Login to One of the CoreOS Cluster Nodes. And Nova-docker service starting. 
+Any Host Login to One of the Controller Cluster Nodes. And Nova-docker service starting. 
 ```
-# vagrant ssh nova-docker-01
+# vagrant ssh controller-01
 
 on coreos
 $ cd /continuse/service
@@ -13,7 +13,10 @@ $ fleetctl start nova-docker.service
 
 ## Docker Image Upload to Glance
 ```
-$ connect nova-docker
+$ vagrant ssh nova-docker-01
+.....
+....
+$ connect
 
 # export OS_TENANT_NAME=admin
 # export OS_USERNAME=admin
@@ -34,14 +37,14 @@ $ connect nova-docker
 You can make instance using Project->Instance menu on Horizon (Dashboard), and allocate a floating public IP.
 
 ## Docker Container Running Check & Test
-Login to CoreOS host which does not running neutron service. Because 
+Login to CoreOS host which does not running neutron service. (You can use controller nodes)
 ```
-# vagrant ssh nova-docker-01
+# vagrant ssh controller-01
 
 $ sudo docker run --rm -it redis redis-cli -h 10.0.5.101
 
 ```
 ## Issues
-I need more time to test for nova-docker driver features. The Live Migration feature is not available on Nova-docker driver, so sophisticated tool is required for normal use.
+The Live Migration feature does not support on Nova-docker driver, so sophisticated tool is required for normal use.
 
 
