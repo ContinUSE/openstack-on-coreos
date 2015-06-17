@@ -30,7 +30,7 @@ RUN curl -sSL https://get.docker.com/ubuntu/ | sh
 RUN apt-get -y install python-pip
 RUN usermod -G docker nova
 RUN git clone https://github.com/stackforge/nova-docker
-RUN cd /nova-docker && git checkout -b pre-i18n 9045ca43b645e72751099491bf5f4f9e4bddbb91 \
+RUN cd /nova-docker && git checkout stable/juno \
     && sudo python setup.py install
 
 ######### /etc/hosts file modify #############
