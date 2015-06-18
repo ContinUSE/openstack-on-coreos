@@ -1,0 +1,4 @@
+glance image-create \
+	--name "redis" \
+	--file docker_image.sample \
+  	--disk-format raw --container-format docker --visibility public --progress
