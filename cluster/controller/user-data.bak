@@ -3,7 +3,7 @@
 coreos:
   etcd2:
     #generate a new token for each unique cluster from https://discovery.etcd.io/new
-    discovery: <token>
+    discovery: https://discovery.etcd.io/f8af13f644c7c5a7ed5382dd0e1c6e4c
     # multi-region and multi-cloud deployments need to use $public_ipv4
     advertise-client-urls: http://$public_ipv4:2379
     initial-advertise-peer-urls: http://$private_ipv4:2380
@@ -54,6 +54,21 @@ coreos:
             After=flanneld.service
             [Service]
             Environment=DOCKER_OPTS='--insecure-registry="0.0.0.0/0"'
+    - name: setup-network-environment.service
+      command: start
+      content: |
+        [Unit]
+        Description=Setup Network Environment
+        Documentation=https://github.com/kelseyhightower/setup-network-environment
+        Requires=network-online.target
+        After=network-online.target
+        [Service]
+        ExecStartPre=-/usr/bin/mkdir -p /opt/bin
+        #ExecStartPre=/usr/bin/wget -N -P /opt/bin https://storage.googleapis.com/k8s/setup-network-environment
+        #ExecStartPre=/usr/bin/chmod +x /opt/bin/setup-network-environment
+        ExecStart=/opt/bin/setup-network-environment
+        RemainAfterExit=yes
+        Type=oneshot
     - name: settimezone.service
       command: start
       content: |
@@ -70,7 +85,7 @@ write_files:
    permissions: '0644'
    content: |
       #!/bin/bash
-      export PATH=$PATH:/opt/bin:/continuse/bin
+      export PATH=$PATH:/opt/bin
  - path: /opt/bin/connect
    permissions: '0755'
    content: |

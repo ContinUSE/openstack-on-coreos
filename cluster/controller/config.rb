@@ -39,7 +39,7 @@ $new_discovery_url="https://discovery.etcd.io/new?size=#{$num_instances}"
 $instance_name_prefix="controller"
 
 # Official CoreOS channel from which updates should be downloaded
-$update_channel='alpha'
+$update_channel='stable'
 
 # Log the serial consoles of CoreOS VMs to log/
 # Enable by setting value to true, disable with false
@@ -61,7 +61,7 @@ $update_channel='alpha'
 
 # Customize VMs
 #$vm_gui = false
-$vm_memory = 2048
+$vm_memory = 3072
 #$vm_cpus = 1
 
 # Share additional folders to the CoreOS VMs
