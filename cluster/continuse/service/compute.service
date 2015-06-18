@@ -1,5 +1,5 @@
 [Unit]
-Description=Compute Service for OpenStack:JUNO
+Description=Compute Service for OpenStack:KILO
 Requires=docker.service
 After=docker.service
 
@@ -28,7 +28,7 @@ TUNNEL_IP=$(ifconfig eth2 | awk '/ inet / {print $2}'); \
 -v /lib/modules:/lib/modules \
 -v /continuse:/continuse \
 -v /continuse/shared/nova:/var/lib/nova/instances \
-continuse/openstack-compute:juno"
+continuse/openstack-compute:kilo"
 ExecStop=-/usr/bin/docker exec compute ovs-vsctl del-br br-int
 ExecStop=-/usr/bin/docker exec compute ovs-vsctl del-br br-tun
 ExecStop=-/usr/bin/docker exec compute ovs-vsctl del-br br-ex

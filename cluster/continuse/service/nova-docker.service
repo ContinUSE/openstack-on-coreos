@@ -1,5 +1,5 @@
 [Unit]
-Description=Nova-Docker Service for OpenStack:JUNO
+Description=Nova-Docker Service for OpenStack:KILO
 Requires=docker.service
 After=docker.service
 
@@ -29,7 +29,7 @@ TUNNEL_IP=$(ifconfig eth2 | awk '/ inet / {print $2}'); \
 -v /sys/fs/cgroup:/sys/fs/cgroup \
 -v /lib/modules:/lib/modules \
 -v /dev:/dev \
-continuse/openstack-nova-docker:juno"
+continuse/openstack-nova-docker:kilo"
 ExecStop=-/usr/bin/docker exec nova-docker ovs-vsctl del-br br-int
 ExecStop=-/usr/bin/docker exec nova-docker ovs-vsctl del-br br-tun
 ExecStop=-/usr/bin/docker exec nova-docker ovs-vsctl del-br br-ex

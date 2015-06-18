@@ -1,5 +1,5 @@
 [Unit]
-Description=Neutron Service for OpenStack:JUNO
+Description=Neutron Service for OpenStack:KILO
 Requires=docker.service
 After=docker.service
 
@@ -26,7 +26,7 @@ TUNNEL_IP=$(ifconfig eth2 | awk '/ inet / {print $2}'); \
 --publish 9696:9696 \
 -v /etc/localtime:/etc/localtime \
 -v /lib/modules:/lib/modules \
-continuse/openstack-network:juno"
+continuse/openstack-network:kilo"
 ExecStop=-/usr/bin/docker exec network ovs-vsctl del-br br-int
 ExecStop=-/usr/bin/docker exec network ovs-vsctl del-br br-tun
 ExecStop=-/usr/bin/docker exec network ovs-vsctl del-br br-ex
