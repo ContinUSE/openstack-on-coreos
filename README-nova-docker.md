@@ -38,6 +38,7 @@ You can make instance using Project->Instance menu on Horizon (Dashboard), and a
 
 ## Docker Container Running Check & Test
 Login to CoreOS host which does not running neutron service. (You can use controller nodes)
+YOU HAVE TO ADD RULE "REDIS TCP PORT" in Security Group Rules.
 ```
 # vagrant ssh controller-01
 
