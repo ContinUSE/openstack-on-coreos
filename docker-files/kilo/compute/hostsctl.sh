@@ -70,6 +70,9 @@ insert_controller_ip()
 
 change_nova_conf()
 {
+    # NOVNC PROXY
+    sed -i "s/^novncproxy_base_url.*/novncproxy_base_url = http:\/\/$controller_ip:6080\/vnc_auto.html/" /etc/nova/nova.conf
+
     pkill -f nova-compute
     pkill -f neutron-openvswitch-agent
     pkill -f neutron-metadata-agent
