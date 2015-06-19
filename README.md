@@ -45,19 +45,27 @@ This is a muti-node cluster proof-of-concept that includes setting up the extern
 
 ## Docker Container
 ##### Controller Image
-* Image Name : continuse/openstack-controller:juno
+* Image Name : 
+continuse/openstack-controller:juno
+continuse/openstack-controller:kilo
 * provide service : MySQL, RabbitMQ, Keystone, Glance, Nova, Neutron
 
 ##### Network Image
-* Image Name : continuse/openstack-network:juno
+* Image Name : 
+continuse/openstack-network:juno
+continuse/openstack-network:kilo
 * provide service : Distributed Virtual Router / L3 HA with VxLAN
 
 ##### Compute Image
-* Images Name : continuse/openstack-compute:juno
+* Images Name : 
+continuse/openstack-compute:juno
+continuse/openstack-compute:kilo
 * provide service : Libvirt, Nova, Netron
 
 ##### Nova-docker Image
-* Images Name : continuse/openstack-nova-docker:juno
+* Images Name : 
+continuse/openstack-nova-docker:juno
+continuse/openstack-nova-docker:kilo
 * provide service : Nova, Netron, Docker Driver
 
 **Currently, these images support Operating System is only  CoreOS, but I plan to develop for any Linux that supports Docker Service.In addition, I will update for the other services of OpenStack, such as swift, cinder service etc.**
@@ -172,7 +180,7 @@ $ cd $HOME/test/controller
 $ vagrant ssh controller-03 -- -A
 
 On CoreOS
-$ sudo docker pull continuse/openstack-controller:juno
+$ sudo docker pull continuse/openstack-controller:juno (or kilo)
 ```
 
 ### network image
@@ -183,7 +191,7 @@ $ cd $HOME/test/network
 $ vagrant ssh network-01 -- -A
 
 On CoreOS
-$ sudo docker pull continuse/openstack-network:juno
+$ sudo docker pull continuse/openstack-network:juno (or kilo)
 ```
 
 ### compute image
@@ -194,7 +202,7 @@ $ cd $HOME/test/compute
 $ vagrant ssh compute-01 -- -A
 
 On CoreOS
-$ sudo docker pull continuse/openstack-compute:juno
+$ sudo docker pull continuse/openstack-compute:juno (or kilo)
 ```
 
 ### nova-docker image
@@ -205,7 +213,7 @@ $ cd $HOME/test/nova-docker
 $ vagrant ssh nova-docker-01 -- -A
 
 On CoreOS
-$ sudo docker pull continuse/openstack-nova-docker:juno
+$ sudo docker pull continuse/openstack-nova-docker:juno (or kilo)
 ```
 
 **If you do not the pulling images, it takes a lot of time at the beginning of services.**
