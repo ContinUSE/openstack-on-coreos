@@ -90,6 +90,8 @@ sed -i "s/NEUTRON_PASS/$NEUTRON_PASS/g" $NOVA_CONF
 sed -i "s/ADMIN_TENANT_NAME/$ADMIN_TENANT_NAME/g" $NOVA_CONF
 sed -i "s/MYIPADDR/$MYIPADDR/g" $NOVA_CONF
 
+sed -i "s/^novncproxy_base_url.*/novncproxy_base_url = http:\/\/$controller:6080\/vnc_auto.html/" $NOVA_CONF
+
 # Select kvm/qemu
 cpus=`egrep -c '(vmx|svm)' /proc/cpuinfo`
 if [ $cpus -eq 0 ]; then
