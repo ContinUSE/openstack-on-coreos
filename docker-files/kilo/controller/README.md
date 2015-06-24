@@ -7,7 +7,7 @@ OpenStack is obtaining using Docker/CoreOS the following advatages :
 
 ##### Controller Image
 * Image Name : continuse/openstack-controller:juno
-* provide service : MySQL, RabbitMQ, Keystone, Glance, Nova, Neutron
+* provide service : MySQL, RabbitMQ, Keystone, Glance, Nova, Neutron, Heat
 
 ##### Network Image
 * Image Name : continuse/openstack-network:juno

@@ -52,7 +52,7 @@ RUN apt-get -y install openstack-dashboard \
        && dpkg --purge openstack-dashboard-ubuntu-theme
 
 # Heat
-RUN apt-get -y install heat-api heat-api-cfn heat-engine python-heatclient
+RUN apt-get update && apt-get -y install heat-api heat-api-cfn heat-engine python-heatclient
 
 # MySQL Data Volume
 VOLUME ["/data"]
@@ -76,6 +76,9 @@ COPY config/nova/nova.conf /etc/nova/nova.conf
 # Configuration File for Neutron Service
 COPY config/neutron/neutron.conf /etc/neutron/neutron.conf
 COPY config/neutron/ml2_conf.ini /etc/neutron/plugins/ml2/ml2_conf.ini
+
+# Configuration File for Heat Service
+COPY config/heat/heat.conf /etc/heat/heat.conf
 
 # Dashboard conf file
 COPY config/horizon/local_settings.py /etc/openstack-dashboard/local_settings.py

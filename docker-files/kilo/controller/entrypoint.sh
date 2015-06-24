@@ -44,6 +44,11 @@ if [ "$CINDER_DBPASS" ]; then
     echo "CREATE DATABASE IF NOT EXISTS \`cinder\` ;" >> "$tempSqlFile"
     echo "GRANT ALL ON \`cinder\`.* TO 'cinder'@'%' IDENTIFIED BY '$CINDER_DBPASS';" >> "$tempSqlFile"
 fi
+if [ "$HEAT_DBPASS" ]; then
+    echo "CREATE USER 'heat'@'%' IDENTIFIED BY '$HEAT_DBPASS' ;" >> "$tempSqlFile"
+    echo "CREATE DATABASE IF NOT EXISTS \`heat\` ;" >> "$tempSqlFile"
+    echo "GRANT ALL ON \`heat\`.* TO 'heat'@'%' IDENTIFIED BY '$HEAT_DBPASS';" >> "$tempSqlFile"
+fi
 
 echo 'FLUSH PRIVILEGES ;' >> "$tempSqlFile"
 		
@@ -128,6 +133,20 @@ su -s /bin/sh -c "nova-consoleauth --config-file=$NOVA_CONF &" nova
 su -s /bin/sh -c "nova-scheduler --config-file=$NOVA_CONF &" nova
 su -s /bin/sh -c "nova-conductor --config-file=$NOVA_CONF &" nova
 su -s /bin/sh -c "nova-novncproxy --config-file=$NOVA_CONF &" nova
+
+## Heat
+echo 'Heat Setup.........................'
+HEAT_CONF=/etc/heat/heat.conf
+sed -i "s/HEAT_DOMAIN_PASS/$HEAT_DOMAIN_PASS/g" $HEAT_CONF
+sed -i "s/HEAT_DBPASS/$HEAT_DBPASS/g" $HEAT_CONF
+sed -i "s/HEAT_PASS/$HEAT_PASS/g" $HEAT_CONF
+sed -i "s/ADMIN_TENANT_NAME/$ADMIN_TENANT_NAME/g" $HEAT_CONF
+sed -i "s/RABBIT_PASS/$RABBIT_PASS/g" $HEAT_CONF
+
+su -s /bin/sh -c "heat-manage db_sync" heat
+service heat-api restart
+service heat-api-cfn restart
+service heat-engine restart
 
 ## Neutron Setup
 echo 'Neutron Setup.......................'

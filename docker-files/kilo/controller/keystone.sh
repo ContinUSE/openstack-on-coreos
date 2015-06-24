@@ -32,6 +32,11 @@ openstack user create --password $DEMO_PASS demo > /dev/null 2>&1
 openstack role create user > /dev/null 2>&1
 openstack role add --project demo --user demo user > /dev/null 2>&1
 
+# Foe Heat Service
+openstack role create heat_stack_owner > /dev/null 2>&1
+openstack role add --project demo --user demo heat_stack_owner > /dev/null 2>&1
+openstack role create heat_stack_user > /dev/null 2>&1
+
 unset OS_TOKEN OS_URL
 export OS_PROJECT_DOMAIN_ID=default
 export OS_USER_DOMAIN_ID=default
@@ -98,21 +103,39 @@ if [ -z "$endpoint" ]; then
      network
 fi
 
-# user / role / endpoint create for Cinder Service
-#openstack user create --password $CINDER_PASS cinder > /dev/null 2>&1
-#openstack role add --project $ADMIN_TENANT_NAME --user cinder admin > /dev/null 2>&1
-#name=`openstack service list | awk '/ volume / {print $2}'`
-#if [ -z $name ]; then
-   #openstack service create --name cinder --description "OpenStack Networking" volume
-#fi
+# user / role / endpoint create for Heat Service
+openstack user create --password $HEAT_PASS heat > /dev/null 2>&1
+openstack role add --project $ADMIN_TENANT_NAME --user heat admin > /dev/null 2>&1
+name=`openstack service list | awk '/ orchestration / {print $2}'`
+if [ -z $name ]; then
+   openstack service create --name heat --description "Orchestration" orchestration
+fi
 
-# Endpoint create for cinder service
-#endpoint=`openstack endpoint list | awk '/ volume / {print $2}'`
-#if [ -z "$endpoint" ]; then
-   #openstack endpoint create \
-     #--publicurl http://controller:8776/v2/%\(tenant_id\)s \
-     #--internalurl http://controller:8776/v2/%\(tenant_id\)s \
-     #--adminurl http://controller:8776/v2/%\(tenant_id\)s \
-     #--region $REGION_NAME \
-     #volume
-#fi
+name=`openstack service list | awk '/ cloudformation / {print $2}'`
+if [ -z $name ]; then
+   openstack service create --name heat-cfn --description "Orchestration" cloudformation
+fi
+
+# Endpoint create for heat service
+endpoint=`openstack endpoint list | awk '/ orchestration / {print $2}'`
+if [ -z "$endpoint" ]; then
+   openstack endpoint create \
+     --publicurl http://controller:8004/v1/%\(tenant_id\)s  \
+     --internalurl http://controller:8004/v1/%\(tenant_id\)s \
+     --adminurl http://controller:8004/v1/%\(tenant_id\)s  \
+     --region $REGION_NAME \
+     orchestration
+fi
+
+endpoint=`openstack endpoint list | awk '/ cloudformation / {print $2}'`
+if [ -z "$endpoint" ]; then
+   openstack endpoint create \
+     --publicurl http://controller:8000/v1  \
+     --internalurl http://controller:8000/v1 \
+     --adminurl http://controller:8000/v1  \
+     --region $REGION_NAME \
+     cloudformation 
+fi
+
+# Create the heat domain in Identity service
+heat-keystone-setup-domain --stack-user-domain-name heat_user_domain --stack-domain-admin heat_domain_admin --stack-domain-admin-password $HEAT_DOMAIN_PASS
