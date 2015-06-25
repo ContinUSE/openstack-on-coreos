@@ -136,6 +136,3 @@ if [ -z "$endpoint" ]; then
      --region $REGION_NAME \
      cloudformation 
 fi
-
-# Create the heat domain in Identity service
-heat-keystone-setup-domain --stack-user-domain-name heat_user_domain --stack-domain-admin heat_domain_admin --stack-domain-admin-password $HEAT_DOMAIN_PASS
