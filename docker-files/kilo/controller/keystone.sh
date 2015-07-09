@@ -136,3 +136,38 @@ if [ -z "$endpoint" ]; then
      --region $REGION_NAME \
      cloudformation 
 fi
+
+
+# user / role / endpoint create for Cinder Service
+openstack user create --password $CINDER_PASS cinder > /dev/null 2>&1
+openstack role add --project $ADMIN_TENANT_NAME --user cinder admin > /dev/null 2>&1
+name=`openstack service list | awk '/ volume / {print $2}'`
+if [ -z $name ]; then
+   openstack service create --name cinder --description "OpenStack Block Storage" volume
+fi
+
+name=`openstack service list | awk '/ volumev2 / {print $2}'`
+if [ -z $name ]; then
+   openstack service create --name cinderv2 --description "OpenStack Block Storage" volumev2
+fi
+
+# Endpoint create for heat service
+endpoint=`openstack endpoint list | awk '/ volume / {print $2}'`
+if [ -z "$endpoint" ]; then
+   openstack endpoint create \
+     --publicurl http://controller:8776/v2/%\(tenant_id\)s \
+     --internalurl http://controller:8776/v2/%\(tenant_id\)s \
+     --adminurl http://controller:8776/v2/%\(tenant_id\)s \
+     --region $REGION_NAME \
+     volume
+fi
+
+endpoint=`openstack endpoint list | awk '/ volumev2 / {print $2}'`
+if [ -z "$endpoint" ]; then
+   openstack endpoint create \
+     --publicurl http://controller:8776/v2/%\(tenant_id\)s \
+     --internalurl http://controller:8776/v2/%\(tenant_id\)s \
+     --adminurl http://controller:8776/v2/%\(tenant_id\)s \
+     --region $REGION_NAME \
+     volumev2 
+fi

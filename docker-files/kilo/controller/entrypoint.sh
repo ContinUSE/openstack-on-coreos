@@ -144,9 +144,22 @@ sed -i "s/ADMIN_TENANT_NAME/$ADMIN_TENANT_NAME/g" $HEAT_CONF
 sed -i "s/RABBIT_PASS/$RABBIT_PASS/g" $HEAT_CONF
 
 su -s /bin/sh -c "heat-manage db_sync" heat
-service heat-api restart
-service heat-api-cfn restart
-service heat-engine restart
+service heat-api start
+service heat-api-cfn start
+service heat-engine start
+
+## Cinder
+echo 'Cinder Setup.........................'
+CINDER_CONF=/etc/cinder/cinder.conf
+sed -i "s/CINDER_PASS/$CINDER_PASS/g" $CINDER_CONF
+sed -i "s/CINDER_DBPASS/$CINDER_DBPASS/g" $CINDER_CONF
+sed -i "s/RABBIT_PASS/$RABBIT_PASS/g" $CINDER_CONF
+sed -i "s/MYIPADDR/$MYIPADDR/g" $CINDER_CONF
+sed -i "s/ADMIN_TENANT_NAME/$ADMIN_TENANT_NAME/g" $CINDER_CONF
+
+su -s /bin/sh -c "cinder-manage db sync" cinder
+service cinder-scheduler start 
+service cinder-api start
 
 ## Neutron Setup
 echo 'Neutron Setup.......................'

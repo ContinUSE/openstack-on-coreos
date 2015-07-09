@@ -54,6 +54,9 @@ RUN apt-get -y install openstack-dashboard \
 # Heat
 RUN apt-get update && apt-get -y install heat-api heat-api-cfn heat-engine python-heatclient
 
+# Cinder
+RUN apt-get -y install cinder-api cinder-scheduler python-cinderclient
+
 # MySQL Data Volume
 VOLUME ["/data"]
 
@@ -83,11 +86,15 @@ COPY config/heat/heat.conf /etc/heat/heat.conf
 # Dashboard conf file
 COPY config/horizon/local_settings.py /etc/openstack-dashboard/local_settings.py
 
+# Cinder conf file
+COPY config/cinder/cinder.conf /etc/cinder/cinder.conf
+
 RUN chown glance:glance /etc/glance/glance-api.conf \
   && chown glance:glance /etc/glance/glance-registry.conf \
   && chown nova:nova /etc/nova/nova.conf \
   && chown root:neutron /etc/neutron/neutron.conf \
-  && chown root:neutron /etc/neutron/plugins/ml2/ml2_conf.ini
+  && chown root:neutron /etc/neutron/plugins/ml2/ml2_conf.ini \
+  && chown cinder:cinder /etc/cinder/cinder.conf
 
 COPY entrypoint.sh /entrypoint.sh
 COPY keystone.sh /keystone.sh
