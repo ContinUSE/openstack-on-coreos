@@ -116,6 +116,7 @@ The partition table has been altered!
 Calling ioctl() to re-read partition table.
 Syncing disks.
 ```
+
 ## Issues
 The cinder node reboot when fleetctl service restart. If not....could not NFS mount.
 
