@@ -13,6 +13,13 @@ On CoreOS
 $ sudo docker pull continuse/openstack-cinder:kilo 
 ```
 
+## cinder service start using fleetctl command
+On the controller node
+```
+$ cd /continuse/service
+$ fleetctl start cinder.service
+```
+
 ## Block Storage Attaching Test Procedure
 
 On the Controller Node
