@@ -1,6 +1,8 @@
 #cloud-config
 
 coreos:
+  update:
+    reboot-strategy: off
   etcd2:
     initial-cluster: controller-01=http://192.168.10.11:2380,controller-02=http://192.168.10.12:2380,controller-03=http://192.168.10.13:2380
     listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001

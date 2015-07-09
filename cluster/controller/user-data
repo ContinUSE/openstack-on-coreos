@@ -1,6 +1,8 @@
 #cloud-config
 
 coreos:
+  update:
+    reboot-strategy: off
   etcd2:
     #generate a new token for each unique cluster from https://discovery.etcd.io/new
     discovery: <token>
