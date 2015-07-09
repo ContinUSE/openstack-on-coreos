@@ -13,6 +13,7 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8  
 
 RUN apt-get install -y nova-compute sysfsutils
+RUN apt-get -y install nfs-common
 
 ######## neutron service ###############
 RUN apt-get -y install neutron-plugin-ml2 neutron-plugin-openvswitch-agent neutron-l3-agent
@@ -34,6 +35,7 @@ COPY config/neutron/neutron.conf /etc/neutron/neutron.conf
 COPY config/neutron/l3_agent.ini /etc/neutron/l3_agent.ini
 COPY config/neutron/metadata_agent.ini /etc/neutron/metadata_agent.ini
 COPY config/neutron//ml2_conf.ini /etc/neutron/plugins/ml2/ml2_conf.ini
+#COPY config/nova/idmapd.conf /etc/idmapd.conf
 
 RUN chown nova:nova /etc/nova/nova.conf \
   && chown root:neutron /etc/neutron/neutron.conf \

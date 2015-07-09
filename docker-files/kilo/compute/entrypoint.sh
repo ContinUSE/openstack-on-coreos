@@ -110,6 +110,9 @@ chown -R nova:nova /var/lib/nova/instances
 # nova-compute service starting
 su -s /bin/sh -c "/usr/bin/nova-compute --config-file=/etc/nova/nova.conf --config-file=/etc/nova/nova-compute.conf &" nova
 
+# rpcbind service
+service rpcbind start
+
 ######### Neutron Setup Start ################
 modprobe gre
 modprobe openvswitch
