@@ -11,5 +11,6 @@ How to choose openstack version as the follows. You have to edit service files f
 |KILO     |	continuse/openstack-controller:kilo |	controller.service  |
 |         |	continuse/openstack-network:kilo    |	network.service     |
 |         |	continuse/openstack-compute:kilo    |	compute.service     |
+|         |	continuse/openstack-cinder:kilo	    |	cinder.service      |
 |         |	continuse/openstack-nova-docker:kilo|	nova-docker.service |
 +---------+-----------------------------------------+-----------------------+
