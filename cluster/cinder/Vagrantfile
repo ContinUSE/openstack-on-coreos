@@ -117,9 +117,9 @@ Vagrant.configure("2") do |config|
         vb.cpus = vm_cpus
       end
 
-      config.vm.network :private_network, ip: "10.0.5.#{i+40}", :adapter => 2
-      config.vm.network :private_network, ip: "172.16.0.#{i+40}", :netmask => "255.255.0.0", :adapter => 3
-      config.vm.network :private_network, ip: "192.168.10.#{i+40}", :netmask => "255.255.255.0", :adapter => 4
+      config.vm.network :private_network, ip: "10.0.5.#{i+50}", :adapter => 2
+      config.vm.network :private_network, ip: "172.16.0.#{i+50}", :netmask => "255.255.0.0", :adapter => 3
+      config.vm.network :private_network, ip: "192.168.10.#{i+50}", :netmask => "255.255.255.0", :adapter => 4
 
       # Comment below to disble NFS for sharing the host machine into the coreos-vagrant VM.
       config.vm.synced_folder "~/test/continuse", "/continuse", id: "root", :nfs => true, :mount_options =>  ["nolock,vers=3,udp"], :map_uid => 0, :map_gid => 0
