@@ -26,6 +26,7 @@ ExecStart=/usr/bin/docker run --hostname=controller --privileged=true \
 --env NOVA_DBPASS=openstack \
 --env NEUTRON_DBPASS=openstack \
 --env HEAT_DBPASS=heatdbpass \
+--env CINDER_DBPASS=cinderdbpass \
 --env RABBIT_PASS=rabbitpass \
 --env ADMIN_TENANT_NAME=service \
 --env ADMIN_PASS=adminpass \
@@ -36,6 +37,7 @@ ExecStart=/usr/bin/docker run --hostname=controller --privileged=true \
 --env NEUTRON_PASS=neutronpass \
 --env HEAT_PASS=heatpass \
 --env HEAT_DOMAIN_PASS=heatdomainpass \
+--env CINDER_PASS=cinderpass \
 --publish 3306:3306 \
 --publish 5672:5672 \
 --publish 35357:35357 \
@@ -44,12 +46,14 @@ ExecStart=/usr/bin/docker run --hostname=controller --privileged=true \
 --publish 8773:8773 \
 --publish 8774:8774 \
 --publish 8775:8775 \
+--publish 8776:8776 \
 --publish 80:80 \
 --publish 6080:6080 \
 --publish 9696:9696 \
 --publish 9191:9191 \
 --publish 8000:8000 \
 --publish 8004:8004 \
+--publish 25672:25672 \
 -v /etc/localtime:/etc/localtime \
 -v /lib/modules:/lib/modules \
 -v /continuse:/continuse \
