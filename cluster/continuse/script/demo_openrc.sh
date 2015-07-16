@@ -6,3 +6,4 @@ export OS_USERNAME=demo
 export OS_PASSWORD=$DEMO_PASS
 export OS_AUTH_URL=http://controller:5000/v3
 export OS_IMAGE_API_VERSION=2
+export OS_VOLUME_API_VERSION=2
