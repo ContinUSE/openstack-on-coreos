@@ -17,9 +17,10 @@ sed -i "s/MYIPADDR/$MYIPADDR/g" $CINDER_CONF
 sed -i "s/ADMIN_TENANT_NAME/$ADMIN_TENANT_NAME/g" $CINDER_CONF
 sed -i "s/controller/$controller/g" $CINDER_CONF
 
+sed -i "s/MYIPADDR/$MYIPADDR/g" /etc/cinder/nfs_shares
+
 chown nobody:nogroup  /storage
 chmod 777 /storage
-#chown cinder:cinder  /storage
 
 service rpcbind start
 service nfs-kernel-server start
