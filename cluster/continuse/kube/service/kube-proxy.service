@@ -1,0 +1,12 @@
+[Unit]
+Description=Kubernetes Proxy
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+
+[Service]
+ExecStart=/continuse/kube/bin/chk_master.sh proxy
+Restart=always
+RestartSec=10
+
+[X-Fleet]
+Global=true
+MachineMetadata=role=kube
