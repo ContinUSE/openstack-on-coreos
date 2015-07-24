@@ -4,37 +4,18 @@ coreos:
   update:
     reboot-strategy: off
   etcd2:
-    #generate a new token for each unique cluster from https://discovery.etcd.io/new
-    discovery: <token>
-    # multi-region and multi-cloud deployments need to use $public_ipv4
-    advertise-client-urls: http://$public_ipv4:2379
-    initial-advertise-peer-urls: http://$private_ipv4:2380
+    initial-cluster: controller-01=http://192.168.10.11:2380,controller-02=http://192.168.10.12:2380,controller-03=http://192.168.10.13:2380
     listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
-    listen-peer-urls: http://$private_ipv4:2380,http://$private_ipv4:7001
+    #listen-peer-urls: http://$private_ipv4:2380,http://$private_ipv4:7001
+    #advertise-client-urls: http://$public_ipv4:2379
+    #initial-advertise-peer-urls: http://$private_ipv4:2380
+    proxy: on
   fleet:
     public-ip: $public_ipv4
-    metadata: role=controller
+    metadata: role=kube
   flannel:
     interface: $public_ipv4
   units:
-    - name: etcd2.service
-      command: start
-    - name: fleet.service
-      command: start
-    - name: docker-tcp.socket
-      command: start
-      enable: true
-      content: |
-        [Unit]
-        Description=Docker Socket for the API
-
-        [Socket]
-        ListenStream=2375
-        Service=docker.service
-        BindIPv6Only=both
-
-        [Install]
-        WantedBy=sockets.target
     - name: flanneld.service
       command: start
       drop-ins:
@@ -43,7 +24,7 @@ coreos:
             [Unit]
             Requires=etcd2.service
             [Service]
-            ExecStartPre=/usr/bin/etcdctl set /coreos.com/network/config '{"Network": "10.244.0.0/16", "Backend": {"Type": "vxlan"}}'
+            ExecStartPre=/usr/bin/etcdctl set /coreos.com/network/config '{"Network":"10.244.0.0/16", "Backend": {"Type": "vxlan"}}'
     - name: fleet.service
       command: start
     - name: docker.service
@@ -56,6 +37,7 @@ coreos:
             After=flanneld.service
             [Service]
             Environment=DOCKER_OPTS='--insecure-registry="0.0.0.0/0"'
+
     - name: settimezone.service
       command: start
       content: |
@@ -77,4 +59,4 @@ write_files:
    permissions: '0755'
    content: |
       #!/bin/bash
-      docker exec -it controller /bin/bash
+      docker exec -it compute /bin/bash
