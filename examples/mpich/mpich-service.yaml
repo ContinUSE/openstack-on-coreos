@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mpich-master
+  # namespace: mpich-system
+  labels:
+    name: mpich-master
+spec:
+  type: NodePort
+  ports:
+    # the port that this service should serve on
+  - port: 22
+    targetPort: 22
+    nodePort: 32000
+  selector:
+    name: mpich-master

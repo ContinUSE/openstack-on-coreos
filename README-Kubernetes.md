@@ -35,8 +35,26 @@ $ fleetctl start kube-kubelet.service
 $ fleetctl start kube-proxy.service
 ```
 
+### Kubernetes Service for GUI Interface
+```
+$ kubectl create -f kube-ui-rc.yaml --namespace=kube-system
+$ kubectl create -f kube-ui-svc.yaml --namespace=kube-system
+```
+
+## Kubernetes UI -- Web-based
+```
+http://192.168.10.12:8080/ui/           IP address of Kubernetes API Server Running
+```
+
+#### cAdvisor -- Web-based monitoring
+```
+http://192.168.10.71:4194/containers/    Each Kube Cluster node
+```
+
+**KUBERNETES_VERSION** v1..0.1
+
 ### Usage
 
 If you want to test something exsamples, start with [Kubernetes examples]
 (https://github.com/GoogleCloudPlatform/kubernetes/blob/master/examples/).
-
+And I am trying yo make examples. See with [My Examples] (https://github.com/ContinUSE/kubernetes-coreos-cluster/tree/master/examples).

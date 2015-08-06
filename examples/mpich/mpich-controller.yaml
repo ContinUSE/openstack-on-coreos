@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: mpich-worker
+  # namespace: mpich-system
+spec:
+  replicas: 2
+  selector:
+    name: mpich-worker
+  template:
+    metadata:
+      labels:
+        name: mpich-worker
+    spec:
+      containers:
+      - name: mpich-worker
+        image: continuse/mpich:v3
+        env:
+          - name: WORKER
+            value: "true"
+        ports:
+        - containerPort: 6379
+        resources:
+          limits:
+            cpu: "0.1"
+        volumeMounts:
+        - mountPath: /share
+          name: share
+      volumes:
+        - name: share
+          hostPath: 
+             path: /continuse/mpi
+

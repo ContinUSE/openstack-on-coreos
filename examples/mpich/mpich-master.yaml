@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mpich-master
+  # namespace: mpich-system
+  labels:
+    name: mpich-master
+    role: master
+spec:
+  containers:
+    - name: mpich-master
+      image: continuse/mpich:v3
+      env:
+        - name: MASTER
+          value: "true"
+        - name: ETCDCTL_PEERS
+          value: "192.168.10.11:4001,192.168.10.12:4001,192.168.10.13:4001"
+        - name: KUBE_NAMESPACE
+          value: "default"
+      ports:
+        - containerPort: 22
+      resources:
+        limits:
+          cpu: "0.1"
+      volumeMounts:
+        - mountPath: /share
+          name: share
+  volumes:
+    - name: share
+      hostPath:
+         path : /continuse/mpi
