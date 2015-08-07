@@ -45,7 +45,7 @@ touch $MACHINE_FILE.old
 
 while true;
 do
-    /pod_ip.py $KUBE_NAMESPACE > $MACHINE_FILE
+    /pod_ip.py > $MACHINE_FILE
     /known_hosts.py $MACHINE_FILE > $FIRST_HOSTS
     list=`cat $FIRST_HOSTS`
     for i in $list

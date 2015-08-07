@@ -17,6 +17,8 @@ spec:
           value: "192.168.10.11:4001,192.168.10.12:4001,192.168.10.13:4001"
         - name: KUBE_NAMESPACE
           value: "default"
+        - name: KUBE_METADATA_NAME_KEY
+          value: "mpich-"
       ports:
         - containerPort: 22
       resources:
