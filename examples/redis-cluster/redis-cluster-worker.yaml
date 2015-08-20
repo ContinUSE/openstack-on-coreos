@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: redis-cluster-worker
+  # namespace: mpich-system
+spec:
+  replicas: 6
+  selector:
+    name: redis-cluster-worker
+  template:
+    metadata:
+      labels:
+        name: redis-cluster-worker
+    spec:
+      containers:
+      - name: redis-cluster-worker
+        image: continuse/redis:v3
+        env:
+          - name: WORKER
+            value: "true"
+        ports:
+        - containerPort: 6379
+        resources:
+          limits:
+            cpu: "0.1"
+

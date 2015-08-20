@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: redis-cluster-manager
+  # namespace: redis-cluster-system
+spec:
+  replicas: 1
+  selector:
+    name: redis-cluster-manager
+  template:
+    metadata:
+      labels:
+        name: redis-cluster-manager
+        role: cluster-cluster-manager
+    spec:
+      containers:
+       - name: redis-cluster-manager
+         image: continuse/redis:v3
+         env:
+           - name: ETCDCTL_PEERS
+             value: "192.168.10.11:4001,192.168.10.12:4001,192.168.10.13:4001"
+           - name: KUBE_NAMESPACE
+             value: "default"
+           - name: KUBE_LABEL
+             value: "redis-cluster-worker"
+           - name: REPLICAS
+             value: "1"
+         ports:
+           - containerPort: 6379
+         resources:
+           limits:
+             cpu: "0.1"
