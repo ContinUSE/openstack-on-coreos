@@ -20,8 +20,8 @@ $ openssl genrsa -out kube-serviceaccount.key 2048
 ..............
 ..............
 ..............
-$ wget https://github.com/ContinUSE/openstack-on-coreos/releases/download/kube/kube_1.0.1.tgz
-$ tar tvfz kube_1.0.1.tgz
+$ wget https://github.com/ContinUSE/openstack-on-coreos/releases/download/v1.1.2/kube_1.1.2.tgz
+$ tar tvfz kube_1.1.2.tgz
 ```
 
 ### Kubernetes Service Start
@@ -37,6 +37,8 @@ $ fleetctl start kube-proxy.service
 
 ### Kubernetes Service for GUI Interface
 ```
+$ cd /continuse/exsamples/kube-ui
+$ kubectl create -f kube-system.yaml
 $ kubectl create -f kube-ui-rc.yaml --namespace=kube-system
 $ kubectl create -f kube-ui-svc.yaml --namespace=kube-system
 ```
